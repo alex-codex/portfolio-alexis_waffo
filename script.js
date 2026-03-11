@@ -404,17 +404,34 @@ document.addEventListener("DOMContentLoaded", () => {
       return
     }
 
-    // Simulate form submission
-    formStatus.textContent = "Envoi en cours..."
-    formStatus.className = ""
-    formStatus.style.display = "block"
-
-    // Simulate API call
-    setTimeout(() => {
-      formStatus.textContent = "Votre message a été envoyé avec succès. Je vous répondrai dans les plus brefs délais."
-      formStatus.className = "success"
-      contactForm.reset()
-    }, 1500)
+    // Envoi réel du formulaire via Formspree (remplacez par votre endpoint Formspree)
+    fetch('https://formspree.io/f/xnjgadvy', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        name: name,
+        email: email,
+        message: message
+      })
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.ok) {
+          formStatus.textContent = "Votre message a été envoyé avec succès. Je vous répondrai dans les plus brefs délais."
+          formStatus.className = "success"
+          contactForm.reset()
+        } else {
+          formStatus.textContent = "Une erreur est survenue lors de l'envoi. Veuillez réessayer."
+          formStatus.className = "error"
+        }
+      })
+      .catch(() => {
+        formStatus.textContent = "Une erreur est survenue lors de l'envoi. Veuillez réessayer."
+        formStatus.className = "error"
+      })
   })
 
   
