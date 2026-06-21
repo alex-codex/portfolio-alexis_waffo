@@ -1,554 +1,602 @@
-document.addEventListener("DOMContentLoaded", () => {
-  // mes differents  projets
-  const projectData = [
-    {
-      id: "Robot-d'Évitement-d'Obstacles", 
-      category: "arduino",
-      title: "Robot d'Évitement d'Obstacles",
-      desc: "Développement d'un robot autonome basé sur Arduino, capable de naviguer dans un environnement en détectant et évitant les obstacles grâce à des capteurs ultrasoniques. Ce projet m'a permis d'approfondir mes connaissances en robotique embarquée et en programmation microcontrôleur.",
-      img: "Images/arduino.png",
-      tags: ["Arduino", "Capteurs ultrason", "Moteurs DC"],
-      features: [
-        "Détection d'obstacles en temps réel.",
-        "Algorithme de décision pour l'évitement (virage à gauche/droite).",
-        "Contrôle précis des moteurs.",
-      ],
-      challenges:
-        "Le principal défi a été d'optimiser l'algorithme d'évitement pour une navigation fluide et efficace dans des environnements variés. J'ai résolu ce problème en ajustant les seuils de distance des capteurs et en implémentant une logique de virage plus adaptative.",
-    },
-    {
-      id: "sonar",
-      category: "arduino",
-      title: "SONAR (Arduino & Python)",
-      desc: "Conception et programmation d'un système SONAR capable de balayer un angle de 180° pour cartographier son environnement proche. Les données collectées par l'Arduino sont ensuite transmises et visualisées en temps réel via une interface développée en Python, offrant une représentation graphique des distances.",
-      img: "Images/vue_d'ensemble.jpg",
-      tags: ["Arduino", "Python", "Capteurs ultrason", "Communication série", "Matplotlib"],
-      features: [
-        "Balayage angulaire de 180° avec un servomoteur.",
-        "Acquisition de données de distance via ultrasons.",
-        "Visualisation graphique en temps réel des obstacles et distances en Python.",
-        "Communication fluide entre Arduino et Python via port"
-      ],
-      challenges:
-        "La synchronisation de la communication entre l'Arduino et le script Python pour une visualisation en temps réel sans latence a été le défi majeur. J'ai mis en place un protocole de communication simple et des tampons pour assurer une transmission de données stable et rapide.",
-    },
-    {
-      id: "magasin",
-      category: "c",
-      title: "Logiciel de Gestion de Magasin",
-      desc: "Développement d'un logiciel de gestion pour un magasin, en utilisant le langage C. Ce programme permet de gérer les stocks de produits, d'enregistrer les ventes, de suivre les informations clients et de générer des rapports. Il est conçu pour être robuste et efficace, facilitant les opérations quotidiennes d'un petit commerce.",
-      img: "https://placeholder.pics/svg/300x200/DEDEDE/555555/Logiciel%20Gestion",
-      tags: ["Langage C", "Gestion de fichiers", "Structures de données", "Algorithmes de recherche/tri"],
-      features: [
-        "Ajout, modification et suppression de produits.",
-        "Gestion des ventes et calcul automatique des totaux.",
-        "Base de données clients avec fonctions de recherche.",
-        "Génération de rapports de stock et de ventes.",
-        "Interface en console intuitive.",
-      ],
-      challenges:
-        "Un des défis était de concevoir une structure de données efficace pour stocker les informations et de gérer la persistance des données sur disque. J'ai utilisé des fichiers plats et une organisation logique pour assurer l'intégrité et l'accès rapide aux informations.",
-    },
-    {
-      id: "probabilite",
-      category: "python",
-      title: "Analyse Stochastique d'une Tontine",
-      desc: "Projet Python axé sur l'analyse et la simulation stochastique du fonctionnement d'une tontine. Ce programme modélise les flux financiers, les contributions et les distributions, permettant d'étudier la viabilité et les risques associés à ce type de système financier participatif. Des outils d'analyse de données et de visualisation sont utilisés pour présenter les résultats.",
-      img: "Images/graph1.png",
-      tags: ["Python","Matplotlib", "Statistiques"],
-      features: [
-        "Modélisation des contributions et distributions de la tontine.",
-        "Simulation de scénarios aléatoires (retards de paiement, abandons).",
-        "Calcul des indicateurs financiers (solde, gains, pertes).",
-        "Visualisation des résultats via des graphiques (évolution du fonds).",
-      ],
-      challenges:
-        "La modélisation des aspects stochastiques et l'intégration de différents scénarios imprévus ont été complexes. Et ce problème n'a malheureusement pas été résolu.",
-    },
-    {
-      id: "site",
-      category: "web",
-      title: "Mon portfolio",
-      desc: "Conception et développement d'un site web responsive pour présenter mon parcours,ma personne et mes ambitions. Le site est construit avec HTML, CSS et JavaScript",
-      img: "Images/portfolio.png",
-      tags: ["HTML5", "CSS3", "JavaScript", "Responsive Design", "UI/UX"],
-      features: [
-        "A propos de moi",
-        "Mes projets.",
-        "Navigation intuitive et animations CSS.",
-        "Compatibilité mobile et tablette.",
-      ],
-      challenges:
-        "Assurer la responsivité du design sur une multitude d'appareils tout en maintenant une esthétique attrayante a demandé un travail minutieux.",
-    },
-    {
-      id: "tontine",
-      category: "c",
-      title: "Programme de Gestion d'une Tontine",
-      desc: "Développement en langage C d'un programme permettant de gérer les interactions entre les membres d'une tontine. Ce programme gère l'ajout et la suppression de membres, l'enregistrement des cotisations, et la planification des attributions de fonds, garantissant la bonne marche et la transparence de la tontine.",
-      img: "https://placeholder.pics/svg/300x200/DEDEDE/555555/IA%20Jeu",
-      tags: ["Langage C", "Gestion de données", "Structures de données", "Algorithmes de planification"],
-      features: [
-        "Création et gestion de profils membres.",
-        "Enregistrement des contributions et suivi des paiements.",
-        "Planification et exécution des distributions de fonds.",
-        "Calcul des soldes et historique des transactions.",
-        "Validation des entrées utilisateur pour éviter les erreurs.",
-      ],
-      challenges:
-        "La gestion des erreurs et la robustesse du programme face aux entrées utilisateur inattendues ont été un point crucial. J'ai implémenté de nombreuses vérifications et messages d'erreur pour guider l'utilisateur et maintenir l'intégrité des données.",
-    },
-    {
-      id: "jeu",
-      category: "c",
-      title: "Jeu de Bataille Navale en Console",
-      desc: "Création d'une version en console du célèbre jeu de bataille navale, implémentée en langage C. Le jeu propose trois niveaux de 'mer' (tailles de plateau différentes) et intègre des logiques de placement de bateaux, de tirs, et de détection de coups. Ce projet a renforcé mes compétences en logique algorithmique et en gestion d'interactions utilisateur en console.",
-      img: "Images/navale.png",
-      tags: ["Langage C", "Algorithmes de jeu", "Matrices", "Gestion d'entrées/sorties console"],
-      features: [
-        "Trois niveaux de difficulté (tailles de grille différentes).",
-        "Placement manuel ou automatique des bateaux.",
-        "Système de tir et de détection 'touché/coulé'.",
-        "Gestion du tour par tour.",
-        "Affichage clair du plateau de jeu et des tirs.",
-      ],
-      challenges:
-        "La gestion des coordonnées du plateau et la vérification des conditions de victoire ont présenté des défis algorithmiques. J'ai utilisé des matrices pour représenter les plateaux et des fonctions modulaires pour les différentes phases du jeu, rendant le code plus gérable et lisible.",
-    },
-    {
-      id: "hiker-stm32",
-      category: "embarque",
-      title: "Projet Hiker (Carte STM32)",
-      desc: "Programmation bas niveau sur microcontrôleur STM32 pour détecter le passage de randonneurs devant un capteur. Implémentation d'une machine à états robuste pour gérer les situations inattendues (ex: chute d'arbre) et mise à jour dynamique de la distance de considération.",
-      img: "https://placeholder.pics/svg/600x400/DEDEDE/555555/STM32%20Hiker",
-      tags: ["C", "STM32", "Registres", "Machine à états", "Bas Niveau"],
-      features: [
-        "Détection de passage via capteurs",
-        "Manipulation directe des registres matériels",
-        "Gestion des interruptions et situations inattendues",
-      ],
-      challenges: "Le défi principal a été de gérer la complexité de l'environnement physique (fausses détections, obstacles) grâce à une machine à états stricte et une programmation bas niveau rigoureuse."
-    },
-    {
-      id: "elec-analogique",
-      category: "electronique",
-      title: "Simulation Détection de Proximité (US)",
-      desc: "Conception et simulation d'une fonction de détection de proximité utilisant un capteur à ultrasons. Le projet inclut la conversion de la largeur d'impulsion pour un affichage dynamique et visuel sur un bargraph à LED.",
-      img: "https://placeholder.pics/svg/600x400/DEDEDE/555555/Elec%20Analogique",
-      tags: ["Électronique Analogique", "Simulation", "Capteurs US", "Bargraph LED"],
-      features: [
-        "Simulation de signal de capteur à ultrasons",
-        "Conversion largeur d'impulsion",
-        "Interfaçage avec un bargraph LED",
-      ],
-      challenges: "Calibrer précisément le circuit analogique pour que la conversion de l'impulsion reflète fidèlement la distance physique sur l'affichage LED."
-    },
-    {
-      id: "fpga-microonde",
-      category: "embarque",
-      title: "Simulateur Micro-ondes sur FPGA",
-      desc: "Conception d'un circuit numérique complexe sur carte FPGA Basys 3 pour simuler le comportement d'un four à micro-ondes. Le projet a nécessité une description matérielle minutieuse et la création d'un graphe d'états.",
-      img: "https://placeholder.pics/svg/600x400/DEDEDE/555555/FPGA%20Basys3",
-      tags: ["FPGA", "Basys 3", "Description Matérielle", "Circuit Numérique"],
-      features: [
-        "Description matérielle (VHDL/Verilog)",
-        "Élaboration de graphe et machine à états",
-        "Programmation et test sur cible réelle",
-      ],
-      challenges: "Traduire des comportements fonctionnels complexes en logique séquentielle et combinatoire fiable."
-    },
-    {
-      id: "elec-puissance",
-      category: "electronique",
-      title: "Design de Fonction Alimentation",
-      desc: "Études approfondies et livrables sur la conception de systèmes d'alimentation dans le cadre du cours de génie électrique. Implémentation et analyse des performances sur MATLAB.",
-      img: "https://placeholder.pics/svg/600x400/DEDEDE/555555/Elec%20Puissance",
-      tags: ["Électronique de Puissance", "MATLAB", "Génie Électrique", "Alimentation"],
-      features: [
-        "Design de circuits d'alimentation",
-        "Simulation de composants de puissance",
-        "Analyse de rendement et de stabilité",
-      ],
-      challenges: "Modéliser fidèlement les pertes thermiques et électriques dans l'environnement MATLAB pour obtenir des simulations proches du réel."
-    },
-    {
-      id: "arch-si",
-      category: "informatique",
-      title: "Conception d'un Ordinateur (Logisim)",
-      desc: "Compréhension de l'architecture d'un système d'information par la conception complète d'un ordinateur au plus bas niveau en utilisant l'outil Logisim, accompagnée d'exercices de programmation en langage Assembleur.",
-      img: "https://placeholder.pics/svg/600x400/DEDEDE/555555/Logisim",
-      tags: ["Logisim", "Assembleur", "Architecture Ordinateur", "Portes Logiques"],
-      features: [
-        "Création de composants (ALU, Registres, Mémoire)",
-        "Conception du chemin de données",
-        "Programmation d'instructions en Assembleur",
-      ],
-      challenges: "Connecter et synchroniser parfaitement tous les bus de données et signaux de contrôle d'horloge pour que le processeur exécute le code correctement."
-    },
-    {
-      id: "traitement-signal",
-      category: "matlab",
-      title: "Traitement Numérique de l'Image",
-      desc: "Projet MATLAB axé sur le traitement numérique du signal appliqué à l'image. Compréhension approfondie des pixels à travers des opérations mathématiques complexes.",
-      img: "https://placeholder.pics/svg/600x400/DEDEDE/555555/Matlab%20Image",
-      tags: ["MATLAB", "Traitement d'Image", "Segmentation", "Filtres Mathématiques"],
-      features: [
-        "Opérations de segmentation d'image",
-        "Application de produits de convolution",
-        "Calculs de gradient et traitement Laplacien",
-      ],
-      challenges: "Optimiser les matrices de calcul sur MATLAB pour appliquer des filtres lourds (Laplacien) sans temps de latence excessif."
-    },
-    {
-      id: "bdd-serveur",
-      category: "informatique",
-      title: "Déploiement Serveur et Base de Données",
-      desc: "Mise en place d'une infrastructure back-end solide incluant le déploiement d'un serveur sous Apache et la gestion complète d'une base de données relationnelle via SQL.",
-      img: "https://placeholder.pics/svg/600x400/DEDEDE/555555/SQL%20Apache",
-      tags: ["SQL", "Apache", "Backend", "Base de Données Relationnelle"],
-      features: [
-        "Modélisation conceptuelle et logique (MCD/MLD)",
-        "Création de requêtes SQL complexes",
-        "Configuration et déploiement de serveur web",
-      ],
-      challenges: "Assurer la sécurité des accès à la base de données et la bonne configuration d'Apache pour le routage des requêtes."
-    },
-    {
-      id: "poo-academique",
-      category: "informatique",
-      title: "Programmation Orientée Objet",
-      desc: "Projet académique permettant de valider les compétences en modélisation et développement objet. Création de classes, gestion de l'héritage et du polymorphisme pour résoudre un problème algorithmique.",
-      img: "https://placeholder.pics/svg/600x400/DEDEDE/555555/POO",
-      tags: ["POO", "Java/C++", "UML", "Architecture Logicielle"],
-      features: [
-        "Modélisation UML des classes",
-        "Implémentation des piliers de la POO (Encapsulation, Héritage...)",
-        "Gestion optimisée de la mémoire",
-      ],
-      challenges: "Concevoir une architecture évolutive sans créer un couplage trop fort entre les différentes classes de l'application."
-    },
-  ]
+/* ═══════════════════════════════════════════════
+   MOTEUR SPATIAL IMMERSIF ET INJECTION DE DONNÉES
+═══════════════════════════════════════════════ */
 
-  // Navigation menu toggle
-  const burger = document.querySelector(".burger")
-  const nav = document.querySelector(".nav-links")
-  const navLinks = document.querySelectorAll(".nav-links li")
-
-  burger.addEventListener("click", () => {
-    // Toggle Nav
-    nav.classList.toggle("active")
-
-    // Animate Links
-    navLinks.forEach((link, index) => {
-      if (link.style.animation) {
-        link.style.animation = ""
-      } else {
-        // Correction de la syntaxe de l'animation pour utiliser les template literals
-        link.style.animation =  `navLinkFade 0.5s ease forwards ${index / 7 + 0.3}s `
-      }
-    })
-
-    // Burger Animation
-    burger.classList.toggle("active")
-  })
-
-  // Close menu when clicking outside
-  document.addEventListener("click", (event) => {
-    const isClickInsideNav = nav.contains(event.target)
-    const isClickOnBurger = burger.contains(event.target)
-
-    if (nav.classList.contains("active") && !isClickInsideNav && !isClickOnBurger) {
-      nav.classList.remove("active")
-      burger.classList.remove("active")
-
-      // Supprime les animations des liens lors de la fermeture
-      navLinks.forEach((link) => {
-        link.style.animation = ""
-      })
-    }
-  })
-
-  // Close menu when clicking on a link
-  navLinks.forEach((link) => {
-    link.addEventListener("click", () => {
-      if (nav.classList.contains("active")) {
-        nav.classList.remove("active")
-        burger.classList.remove("active")
-
-        // Supprime les animations des liens lors de la fermeture
-        navLinks.forEach((link) => {
-          link.style.animation = ""
-        })
-      }
-    })
-  })
-
-  // Project Filtering
-  const filterBtns = document.querySelectorAll(".filter-btn")
-  const projectCards = document.querySelectorAll(".project-card")
-
-  filterBtns.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      // Remove active class from all buttons
-      filterBtns.forEach((btn) => btn.classList.remove("active"))
-
-      // Add active class to clicked button
-      btn.classList.add("active")
-
-      const filter = btn.getAttribute("data-filter")
-
-      projectCards.forEach((card) => {
-        if (filter === "all" || card.getAttribute("data-category") === filter) {
-          card.style.display = "block"
-          setTimeout(() => {
-            card.style.opacity = "1"
-            card.style.transform = "scale(1)"
-          }, 10)
-        } else {
-          card.style.opacity = "0"
-          card.style.transform = "scale(0.8)"
-          setTimeout(() => {
-            card.style.display = "none"
-          }, 300)
-        }
-      })
-    })
-  })
-
-  
-  
-  // Gestion des Modales de Projets
-
-  // Cibler la seule modale HTML et ses éléments internes
-  const projectModal = document.getElementById("projectModal"); // Assurez-vous que votre modale HTML a bien cet ID
-  const modalBody = projectModal.querySelector(".modal-body");
-  const closeModalBtn = projectModal.querySelector(".close-modal");
-  const projectDetailsBtns = document.querySelectorAll(".project-details-btn");
-
-  projectDetailsBtns.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      console.log("Bouton 'Voir détails' cliqué", btn);
-      const projectId = btn.getAttribute("data-project-id");
-      console.log("ID du projet:", projectId);
-      const project = projectData.find((p) => p.id === projectId);
-      if (!project) {
-      console.warn("Projet non trouvé pour l'ID:", projectId);
-      modalBody.innerHTML = `<p style='color:red;'>Projet non trouvé pour l'ID: ${projectId}</p>`;
-      projectModal.style.display = "block";
+// 1. INJECTION ROBUSTE DES DONNÉES (Polling system corrigé)
+function injectPortfolioData() {
+  try {
+    // On vérifie directement l'existence des constantes globales
+    if (typeof PROJECTS === 'undefined' || typeof TIMELINE === 'undefined') {
+      setTimeout(injectPortfolioData, 100);
       return;
-      }
-      console.log("Projet trouvé:", project);
-      modalBody.innerHTML = `
-      <div class="modal-header">
-        <h2>${project.title}</h2>
-      </div>
-      <div class="modal-img">
-        <img src="${project.img}" alt="${project.title}">
-      </div>
-      <div class="modal-desc">
-        <h3>Description</h3>
-        <p>${project.desc}</p>
-        <h3>Technologies utilisées</h3>
-        <div class="project-tags">
-          ${project.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
-        </div>
-        <h3>Fonctionnalités</h3>
-        <div class="project-tags">
-          ${project.features.map(feature => `<p class="feature-item">${feature}</p>`).join('')}
-        </div>
-        <h3>Défis et solutions</h3>
-        <div class="project-tags">
-          <p>${project.challenges}</p>
-        </div>
-      </div>
-      `;
-      projectModal.style.display = "block";
-      document.body.style.overflow = "hidden";
-      console.log("Modal affichée.");
-    });
-  });
-
-  // Gérer la fermeture de la modale par le bouton "x"
-  closeModalBtn.addEventListener("click", () => {
-    projectModal.style.display = "none";
-    document.body.style.overflow = "auto";
-  });
-
-  // Gérer la fermeture de la modale en cliquant à l'extérieur
-  window.addEventListener("click", (event) => {
-    if (event.target === projectModal) { // Si le clic est directement sur l'arrière-plan de la modale
-      projectModal.style.display = "none";
-      document.body.style.overflow = "auto";
-    }
-  });
-
-  
-  
-  // Formulaire de Contact
-
-  const contactForm = document.getElementById("contactForm")
-  const formStatus = document.getElementById("formStatus")
-
-  contactForm.addEventListener("submit", (e) => {
-    e.preventDefault()
-
-    // Get form values
-    const name = document.getElementById("name").value
-    const email = document.getElementById("email").value
-    const message = document.getElementById("message").value
-
-    // Simple validation
-    if (name.trim() === "" || email.trim() === "" || message.trim() === "") {
-      formStatus.textContent = "Veuillez remplir tous les champs."
-      formStatus.className = "error"
-      return
     }
 
-    // Envoi réel du formulaire via Formspree (remplacez par votre endpoint Formspree)
-    fetch('https://formspree.io/f/xnjgadvy', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        name: name,
-        email: email,
-        message: message
-      })
-    })
-      .then(response => response.json())
-      .then(data => {
-        if (data.ok) {
-          formStatus.textContent = "Votre message a été envoyé avec succès. Je vous répondrai dans les plus brefs délais."
-          formStatus.className = "success"
-          contactForm.reset()
-        } else {
-          formStatus.textContent = "Une erreur est survenue lors de l'envoi. Veuillez réessayer."
-          formStatus.className = "error"
-        }
-      })
-      .catch(() => {
-        formStatus.textContent = "Une erreur est survenue lors de l'envoi. Veuillez réessayer."
-        formStatus.className = "error"
-      })
-  })
+    genererConstellationParcours(TIMELINE);
+    genererCartesProjets(PROJECTS);
 
-  
-  
-  // Animations et Comportements Généraux
-
-  // Scroll animation for sections
-  const sections = document.querySelectorAll("section")
-
-  function checkSections() {
-    const triggerBottom = window.innerHeight * 0.8
-
-    sections.forEach((section) => {
-      const sectionTop = section.getBoundingClientRect().top
-
-      if (sectionTop < triggerBottom) {
-        section.classList.add("show")
-      }
-    })
+  } catch (error) {
+    // Si la variable n'existe pas encore, une erreur est levée. On boucle.
+    setTimeout(injectPortfolioData, 100);
   }
-
-  // Initial check
-  checkSections()
-
-  // Check on scroll
-  window.addEventListener("scroll", checkSections)
-
-  // Smooth scrolling for anchor links
-  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-    anchor.addEventListener("click", function (e) {
-      e.preventDefault()
-
-      const targetId = this.getAttribute("href")
-      const targetElement = document.querySelector(targetId)
-
-      if (targetElement) {
-        // Ajuste la position de défilement pour tenir compte de la hauteur du header fixe
-        const headerHeight = document.querySelector("header").offsetHeight
-        const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerHeight
-
-        window.scrollTo({
-          top: targetPosition,
-          behavior: "smooth",
-        })
-      }
-    })
-  })
-
-  // Header scroll effect
-  const header = document.querySelector("header")
-  let lastScrollTop = 0
-
-  window.addEventListener("scroll", () => {
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop
-    const isDarkMode = document.body.classList.contains("dark-mode")
-
-    if (scrollTop > lastScrollTop) {
-      // Scrolling down
-      header.style.transform = "translateY(-100%)"
-    } else {
-      // Scrolling up
-      header.style.transform = "translateY(0)"
-    }
-
-    // Update scroll position
-    lastScrollTop = scrollTop <= 0 ? 0 : scrollTop
-
-    // Add shadow when scrolled and apply appropriate background color based on theme
-    if (scrollTop > 50) {
-      header.style.boxShadow = isDarkMode ? "0 4px 6px rgba(0, 0, 0, 0.3)" : "0 4px 6px rgba(0, 0, 0, 0.1)"
-      header.style.background = isDarkMode ? "rgba(30, 30, 30, 0.95)" : "rgba(255, 255, 255, 0.95)"
-    } else {
-      // Si on est tout en haut, pas d'ombre et couleur de fond par défaut (qui devrait être gérée par le CSS ou par le mode sombre)
-      header.style.boxShadow = "none"
-      // Réapplique la couleur de fond basée sur le mode sombre même si scrollTop n'est pas > 50
-      header.style.background = isDarkMode ? "rgba(30, 30, 30, 0.95)" : "rgba(255, 255, 255, 0.95)"
-    }
-  })
-
-  // Mode sombre toggle
-  const darkModeToggle = document.getElementById("darkmode-toggle")
-
-  // Vérifier si le mode sombre est déjà activé dans le localStorage
-  if (localStorage.getItem("darkMode") === "enabled") {
-    document.body.classList.add("dark-mode")
-    darkModeToggle.checked = true
-  }
-
-  darkModeToggle.addEventListener("change", () => {
-    if (darkModeToggle.checked) {
-      document.body.classList.add("dark-mode")
-      localStorage.setItem("darkMode", "enabled")
-    } else {
-      document.body.classList.remove("dark-mode")
-      localStorage.setItem("darkMode", "disabled")
-    }
-    updateHeaderStyle() // Mettre à jour le style du header après le changement de thème
-  })
-})
-
-// Ajouter également cette fonction pour mettre à jour le header lorsque le mode sombre est activé/désactivé
-function updateHeaderStyle() {
-  const isDarkMode = document.body.classList.contains("dark-mode")
-  const header = document.querySelector("header")
-  const scrollTop = window.pageYOffset || document.documentElement.scrollTop
-
-  if (scrollTop > 50) {
-    header.style.boxShadow = isDarkMode ? "0 4px 6px rgba(0, 0, 0, 0.3)" : "0 4px 6px rgba(0, 0, 0, 0.1)"
-  } else {
-    header.style.boxShadow = "none"; // Pas d'ombre si tout en haut
-  }
-  // Toujours appliquer la couleur de fond correcte en fonction du mode sombre
-  header.style.background = isDarkMode ? "rgba(30, 30, 30, 0.95)" : "rgba(255, 255, 255, 0.95)"
 }
 
-// Appeler updateHeaderStyle au chargement de la page pour assurer la cohérence
-document.addEventListener("DOMContentLoaded", () => {
-  updateHeaderStyle()
-  // Le reste du code DOMContentLoaded existant...
-})
+// Lancement immédiat
+injectPortfolioData();
+
+function genererConstellationParcours(timeline) {
+    const container = document.querySelector('.custom-timeline');
+    if (!container) return;
+
+    // Nettoyage
+    container.innerHTML = '';
+    container.style.position = 'relative';
+    container.style.minHeight = '1000px'; // ✅ AUGMENTÉ pour plus de place
+
+    // 1️⃣ Créer le SVG pour les lignes de connexion
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('class', 'timeline-svg');
+    svg.setAttribute('viewBox', '0 0 100 100');
+    svg.setAttribute('preserveAspectRatio', 'none');
+    container.appendChild(svg);
+
+    // 2️⃣ Positions des nœuds EN ZIGZAG (en %)
+    const positions = timeline.map((item, index) => {
+        // Zigzag horizontal : alterne gauche (20%) et droite (80%)
+        const isLeft = index % 2 === 0;
+        const y = isLeft ? 25 : 50;
+        
+        // Zigzag horizontal
+        const x = 10 + (index * (100 / Math.max(timeline.length - 1, 1)));
+        
+        return { x, y };
+    });
+
+    // 3️⃣ Tracer les lignes de connexion
+    const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+    const gradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+    gradient.setAttribute('id', 'timeline-gradient');
+    gradient.setAttribute('x1', '0%');
+    gradient.setAttribute('y1', '0%');
+    gradient.setAttribute('x2', '100%');
+    gradient.setAttribute('y2', '100%');
+    
+    const stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+    stop1.setAttribute('offset', '0%');
+    stop1.setAttribute('stop-color', 'rgba(0, 102, 255, 0.4)');
+    
+    const stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+    stop2.setAttribute('offset', '100%');
+    stop2.setAttribute('stop-color', 'rgba(0, 102, 255, 0.1)');
+    
+    gradient.appendChild(stop1);
+    gradient.appendChild(stop2);
+    defs.appendChild(gradient);
+    svg.appendChild(defs);
+
+    // Tracer les lignes reliant les points
+    for (let i = 0; i < positions.length - 1; i++) {
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', `${positions[i].x}%`);
+        line.setAttribute('y1', `${positions[i].y}%`);
+        line.setAttribute('x2', `${positions[i + 1].x}%`);
+        line.setAttribute('y2', `${positions[i + 1].y}%`);
+        line.setAttribute('stroke', 'url(#timeline-gradient)');
+        line.setAttribute('stroke-width', '2');
+        line.setAttribute('opacity', '0.7');
+        svg.appendChild(line);
+    }
+
+    // 4️⃣ Créer les nœuds (stars)
+    timeline.forEach((item, index) => {
+        const node = document.createElement('div');
+        node.className = 'star-node';
+        node.style.left = `${positions[index].x}%`;
+        node.style.top = `${positions[index].y}%`;
+        
+        // Glow
+        const glow = document.createElement('div');
+        glow.className = 'star-glow';
+        glow.style.background = item.color;
+        
+        // 📌 Aperçu permanent
+        const preview = document.createElement('div');
+        preview.className = 'star-preview';
+        preview.innerHTML = `
+            <div style="color: ${item.color}; font-weight: 700; font-size: 0.85rem; margin-bottom: 4px;">${item.year}</div>
+            <div style="font-size: 0.75rem;">${item.title}</div>
+        `;
+        
+        // Contenu détaillé (survol/clic)
+        const content = document.createElement('div');
+        content.className = 'star-content';
+        content.innerHTML = `
+            <span class="year">${item.year}</span>
+            <h4>${item.title}</h4>
+            <p style="font-size: 0.85rem; margin: 8px 0 0 0;">${item.subtitle}</p>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin: 6px 0 0 0;">${item.detail}</p>
+        `;
+        
+        // ✅ Interactivité : clic ET survol
+        node.addEventListener('click', (e) => {
+            e.stopPropagation();
+            node.classList.toggle('active');
+        });
+        
+        node.addEventListener('mouseenter', () => {
+            node.classList.add('hover');
+        });
+        
+        node.addEventListener('mouseleave', () => {
+            node.classList.remove('hover');
+        });
+        
+        node.appendChild(glow);
+        node.appendChild(preview);
+        node.appendChild(content);
+        container.appendChild(node);
+    });
+}
+
+/* ═══════════════════════════════════════════════
+   MODAL PARCHEMIN POUR LES PROJETS
+═══════════════════════════════════════════════ */
+function openScrollModal(category, categoryLabel, categoryIcon, categoryProjects) {
+  // Créer le modal s'il n'existe pas
+  let modal = document.getElementById('scroll-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'scroll-modal';
+    modal.className = 'scroll-modal';
+    document.body.appendChild(modal);
+  }
+
+  // Remplir le contenu du modal
+  const categoryIcons = {
+    'arduino': '🤖',
+    'data': '📊',
+    'embarque': '🛰️',
+    'dev': '💻'
+  };
+
+  const contentHTML = `
+    <div class="scroll-modal-content">
+      <button class="scroll-modal-close"><i class="fas fa-times"></i></button>
+      <div class="scroll-modal-header">
+        <h2>${categoryIcon} ${categoryLabel}</h2>
+        <p class="scroll-modal-count">${categoryProjects.length} projet${categoryProjects.length > 1 ? 's' : ''}</p>
+      </div>
+      <div class="scroll-modal-projects">
+        ${categoryProjects.map(p => `
+          <div class="scroll-modal-project-item">
+            <div class="scroll-project-header">
+              <div class="scroll-project-icon">${categoryIcons[p.category] || '📁'}</div>
+              <div class="scroll-project-meta">
+                <h4>${p.title}</h4>
+                <p class="scroll-project-subtitle">${p.subtitle}</p>
+              </div>
+              <span class="scroll-project-year">${p.year}</span>
+            </div>
+            <p class="scroll-project-desc">${p.desc}</p>
+            <div class="scroll-project-tags">
+              ${p.tags.map(tag => `<span class="scroll-project-tag">${tag}</span>`).join('')}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+
+  modal.innerHTML = contentHTML;
+  modal.classList.add('active');
+
+  // Event listener pour fermer le modal
+  modal.querySelector('.scroll-modal-close').addEventListener('click', () => {
+    modal.classList.remove('active');
+    setTimeout(() => {
+      modal.remove();
+    }, 600);
+  });
+
+  // Fermer en cliquant en dehors
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.classList.remove('active');
+      setTimeout(() => {
+        modal.remove();
+      }, 600);
+    }
+  });
+}
+
+/* ═══════════════════════════════════════════════
+   GÉNÉRATION DES PROJETS : CARROUSELS PAR CATÉGORIE
+═══════════════════════════════════════════════ */
+function genererCartesProjets(projects) {
+  const container = document.querySelector('#projects-carousel-grid');
+  if (!container) return;
+
+  // Grouper les projets par catégorie
+  const categories = {};
+  projects.forEach(p => {
+    if (!categories[p.category]) {
+      categories[p.category] = [];
+    }
+    categories[p.category].push(p);
+  });
+
+  // Icônes et labels par catégorie
+  const categoryIcons = {
+    'arduino': '🤖',
+    'data': '📊',
+    'embarque': '🛰️',
+    'dev': '💻'
+  };
+
+  const categoryLabels = {
+    'arduino': 'Arduino & Capteurs',
+    'data': 'Data & IA',
+    'embarque': 'Systèmes Embarqués',
+    'dev': 'Développement'
+  };
+
+  // Ordre des catégories
+  const categoryOrder = ['arduino', 'data', 'embarque', 'dev'];
+
+  // Générer un carrousel pour chaque catégorie (dans l'ordre)
+  categoryOrder.forEach(category => {
+    if (!categories[category] || categories[category].length === 0) return;
+
+    const categoryProjects = categories[category];
+    const section = document.createElement('div');
+    section.className = 'carousel-category-section';
+    section.innerHTML = `
+      <div class="carousel-category-title">
+        ${categoryIcons[category] || '📁'} ${categoryLabels[category] || category}
+      </div>
+    `;
+
+    // Conteneur du carrousel
+    const carouselContainer = document.createElement('div');
+    carouselContainer.className = 'category-carousel-container';
+    
+    const carousel = document.createElement('div');
+    carousel.className = 'category-carousel-3d';
+    carousel.dataset.category = category;
+
+    // Rayon basé sur le nombre de projets
+    const radius = Math.max(250, categoryProjects.length * 70);
+    const angleStep = 360 / categoryProjects.length;
+
+    // Créer les cartes mini (aperçu léger mais stylisé)
+    categoryProjects.forEach((p, index) => {
+      const card = document.createElement('div');
+      card.className = 'carousel-mini-card';
+      card.dataset.category = category;
+      card.dataset.projectId = p.id;
+      
+      const icon = categoryIcons[p.category] || '📁';
+      card.innerHTML = `
+        <div class="mini-card-icon">${icon}</div>
+        <div class="mini-card-title">${p.title}</div>
+      `;
+
+      // Transformation 3D circulaire
+      const angle = index * angleStep;
+      card.style.transform = `rotateY(${angle}deg) translateZ(${radius}px) translateX(-50%) translateY(-50%)`;
+      
+      // 🎯 Ajouter interactivité : clic pour ouvrir le modal parchemin
+      card.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openScrollModal(category, categoryLabels[category], categoryIcons[category], categoryProjects);
+      });
+      
+      carousel.appendChild(card);
+    });
+
+    carouselContainer.appendChild(carousel);
+    section.appendChild(carouselContainer);
+
+    // ❌ BOUTON SUPPRIMÉ - Les utilisateurs cliquent directement sur les cartes pour ouvrir le modal
+    
+    container.appendChild(section);
+  });
+}
+
+function showCategoryDetails(category, projects, label, icon) {
+  // Mettre à jour le titre de la catégorie
+  document.getElementById('category-title').textContent = `${icon} ${label}`;
+  
+  // Générer la liste des projets en détail
+  const projectsList = document.getElementById('category-projects-list');
+  projectsList.innerHTML = '';
+
+  projects.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'category-project-card';
+
+    const tagsHTML = (p.tags || []).map(t => 
+      `<span class="category-project-tag">${t}</span>`
+    ).join('');
+
+    const categoryIcons = {
+      'arduino': '🤖',
+      'data': '📊',
+      'embarque': '🛰️',
+      'dev': '💻'
+    };
+
+    card.innerHTML = `
+      <div class="category-project-header">
+        <div class="category-project-icon">${categoryIcons[p.category] || '📁'}</div>
+        <span class="category-project-year">${p.year}</span>
+      </div>
+      <h3 class="category-project-title">${p.title}</h3>
+      <p class="category-project-subtitle">${p.subtitle}</p>
+      <p class="category-project-desc">${p.desc}</p>
+      <div class="category-project-tags">
+        ${tagsHTML}
+      </div>
+    `;
+
+    projectsList.appendChild(card);
+  });
+}
+
+/* ═══════════════════════════════════════════════
+   2. MOTEUR 3D THREE.JS (SPHÈRE GÉANTE)
+═══════════════════════════════════════════════ */
+(function initThreeJS() {
+  if (typeof THREE === 'undefined') {
+    console.warn("Three.js n'est pas chargé. Vérifie le lien CDN dans ton HTML.");
+    return;
+  }
+
+  const container = document.getElementById('canvas-container');
+  if (!container) return;
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+  
+  let currentView = 'home'; 
+  
+  // SPHÈRE GÉANTE : Paramètres
+  const radius = 20.0; 
+  let targetCameraZ = 38; 
+  let targetCameraY = 0;
+  let targetCameraX = 0;
+
+  camera.position.z = 38; 
+
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  container.appendChild(renderer.domElement);
+
+  const particleCount = 45000; 
+  const geometry = new THREE.BufferGeometry();
+  const positions = new Float32Array(particleCount * 3);
+  const originalPositions = new Float32Array(particleCount * 3);
+
+  for (let i = 0; i < particleCount; i++) {
+    const i3 = i * 3;
+    const u = Math.random();
+    const v = Math.random();
+    const theta = u * Math.PI * 2;
+    const phi = Math.acos(2 * v - 1);
+
+    positions[i3] = radius * Math.sin(phi) * Math.cos(theta);
+    positions[i3+1] = radius * Math.sin(phi) * Math.sin(theta);
+    positions[i3+2] = radius * Math.cos(phi);
+
+    originalPositions[i3] = positions[i3];
+    originalPositions[i3+1] = positions[i3+1];
+    originalPositions[i3+2] = positions[i3+2];
+  }
+
+  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+  const material = new THREE.PointsMaterial({
+    size: 0.05,
+    color: 0x0066FF,
+    transparent: true,
+    opacity: 0.8,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false
+  });
+
+  const particleSphere = new THREE.Points(geometry, material);
+  scene.add(particleSphere);
+
+  const starCount = 2000;
+  const starGeometry = new THREE.BufferGeometry();
+  const starPositions = new Float32Array(starCount * 3);
+  for(let i=0; i<starCount*3; i++) {
+    starPositions[i] = (Math.random() - 0.5) * 200;
+  }
+  starGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+  const starMaterial = new THREE.PointsMaterial({ size: 0.05, color: 0xffffff, transparent: true, opacity: 0.3 });
+  const starField = new THREE.Points(starGeometry, starMaterial);
+  scene.add(starField);
+
+  const mouse = new THREE.Vector2(-9999, -9999);
+  const clock = new THREE.Clock();
+  let isDragging = false;
+  let previousMousePosition = { x: 0, y: 0 };
+
+  window.addEventListener('mousemove', (e) => {
+    mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+
+    if (isDragging && currentView === 'home') {
+      const deltaX = e.clientX - previousMousePosition.x;
+      const deltaY = e.clientY - previousMousePosition.y;
+      particleSphere.rotation.y += deltaX * 0.003;
+      particleSphere.rotation.x += deltaY * 0.003;
+    }
+    previousMousePosition = { x: e.clientX, y: e.clientY };
+  });
+
+  window.addEventListener('mousedown', () => { if(currentView === 'home') isDragging = true; });
+  window.addEventListener('mouseup', () => { isDragging = false; });
+
+  const navItems = [
+    { name: 'about', el: document.querySelector('[data-target="about"]'), pos: new THREE.Vector3(-1, 0.6, 1).normalize().multiplyScalar(radius * 1.05) },
+    { name: 'timeline', el: document.querySelector('[data-target="timeline"]'), pos: new THREE.Vector3(1, 0.3, 0.8).normalize().multiplyScalar(radius * 1.05) },
+    { name: 'projects', el: document.querySelector('[data-target="projects"]'), pos: new THREE.Vector3(-0.3, -0.8, 1).normalize().multiplyScalar(radius * 1.05) },
+    { name: 'contact', el: document.querySelector('[data-target="contact"]'), pos: new THREE.Vector3(0.8, -0.7, 0.8).normalize().multiplyScalar(radius * 1.05) }
+  ];
+
+  function animate() {
+    requestAnimationFrame(animate);
+    const time = clock.getElapsedTime();
+
+    if (!isDragging) {
+      particleSphere.rotation.y += 0.0008;
+      particleSphere.rotation.x += 0.0004;
+    }
+
+    const posAttr = geometry.attributes.position.array;
+    for (let i = 0; i < particleCount; i++) {
+      const i3 = i * 3;
+      let ox = originalPositions[i3];
+      let oy = originalPositions[i3+1];
+      let oz = originalPositions[i3+2];
+
+      let wave = Math.sin(ox * 0.2 + time * 1.5) * 0.15;
+      posAttr[i3] = ox + (ox / radius) * wave;
+      posAttr[i3+1] = oy + (oy / radius) * wave;
+      posAttr[i3+2] = oz + (oz / radius) * wave;
+    }
+    geometry.attributes.position.needsUpdate = true;
+
+    camera.position.z += (targetCameraZ - camera.position.z) * 0.03;
+    camera.position.y += (targetCameraY - camera.position.y) * 0.03;
+    camera.position.x += (targetCameraX - camera.position.x) * 0.03;
+
+    navItems.forEach(item => {
+      if (!item.el) return;
+
+      if (currentView !== 'home') {
+        item.el.style.opacity = '0';
+        item.el.style.pointerEvents = 'none';
+        return;
+      }
+
+      let wp = item.pos.clone().applyMatrix4(particleSphere.matrixWorld);
+
+      if (wp.z < 0) {
+        item.el.style.opacity = '0.02';
+        item.el.style.pointerEvents = 'none';
+      } else if (wp.z < 10.0) {
+        let t = wp.z / 10.0; 
+        item.el.style.opacity = `${0.02 + 0.98 * t}`;
+        item.el.style.pointerEvents = t > 0.4 ? 'auto' : 'none';
+      } else {
+        item.el.style.opacity = '1';
+        item.el.style.pointerEvents = 'auto';
+      }
+
+      wp.project(camera);
+      let x = (wp.x * 0.5 + 0.5) * window.innerWidth;
+      let y = (-(wp.y * 0.5) + 0.5) * window.innerHeight;
+
+      // LIMITER LA ZONE DE DÉPLACEMENT : Garder les éléments dans une zone centrale
+      const minMargin = 100; // Minimum de pixels du bord (ajustable)
+      const maxX = window.innerWidth - minMargin;
+      const maxY = window.innerHeight - minMargin;
+      
+      x = Math.max(minMargin, Math.min(x, maxX));
+      y = Math.max(minMargin, Math.min(y, maxY));
+
+      item.el.style.left = `${x}px`;
+      item.el.style.top = `${y}px`;
+    });
+
+    renderer.render(scene, camera);
+  }
+
+  animate();
+
+  function switchView(viewName) {
+    document.querySelectorAll('.view-panel').forEach(panel => panel.classList.remove('active'));
+    currentView = viewName;
+
+    if (viewName === 'home') {
+      targetCameraX = 0;
+      targetCameraY = 0;
+      targetCameraZ = 38; 
+      
+      setTimeout(() => {
+        const homeView = document.getElementById('view-home');
+        if (homeView) homeView.classList.add('active');
+      }, 500);
+    } else {
+      targetCameraX = 0;
+      targetCameraY = 0;
+      targetCameraZ = 0; 
+
+      setTimeout(() => {
+        const targetPanel = document.getElementById(`view-${viewName}`);
+        if(targetPanel) targetPanel.classList.add('active');
+      }, 900); 
+    }
+  }
+
+  // Système de navigation historique
+  let navigationHistory = ['home'];
+
+  function navigateTo(viewName) {
+    switchView(viewName);
+    if (viewName !== 'home') {
+      navigationHistory.push(viewName);
+    }
+  }
+
+  function goBack() {
+    if (navigationHistory.length > 1) {
+      navigationHistory.pop();
+      const previousView = navigationHistory[navigationHistory.length - 1];
+      switchView(previousView);
+    } else {
+      switchView('home');
+    }
+  }
+
+  navItems.forEach(item => {
+    if(item.el) {
+      item.el.addEventListener('click', () => navigateTo(item.name));
+      item.el.addEventListener('touchstart', (e) => { e.preventDefault(); navigateTo(item.name); }, {passive: false});
+    }
+  });
+
+  // Boîte permanente d'indication pour 'parcours' (timeline) en haut à gauche
+  (function createPermanentTimelineBox() {
+    const existing = document.getElementById('timeline-hint-box');
+    if (existing) return;
+
+    const box = document.createElement('div');
+    box.id = 'timeline-hint-box';
+    box.className = 'timeline-hint-box permanent';
+    box.textContent = 'Cliquer pour avoir les détails';
+    box.setAttribute('role', 'button');
+    box.setAttribute('aria-label', 'Cliquer pour avoir les détails du parcours');
+    document.body.appendChild(box);
+
+    box.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      navigateTo('timeline');
+    });
+  })();
+
+  // Back buttons : navigation intelligente
+  document.querySelectorAll('.back-btn').forEach(btn => {
+    btn.addEventListener('click', () => goBack());
+  });
+
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+
+})();
